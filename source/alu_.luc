@@ -80,7 +80,7 @@ module alu_ (              // MAIN ALU MODULE THAT SELECTS WHICH OPERATION BASED
       6b111111:           // MOD
         q = mod.q;
       default:
-        q = adder.q;
+        q = 0;
     }
     
   }
