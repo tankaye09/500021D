@@ -1,0 +1,34 @@
+module alu_shifter (
+    input alufn[2],
+    input a[16],
+    input b[4],
+    output q[16]
+    
+  ) {
+  alu_shiftleft shiftleft;
+  alu_shiftright shiftright;
+
+  always {
+    shiftright.a = 0;
+    shiftright.b = 0;
+    shiftright.alufn1 = 0;
+    shiftleft.a = 0;
+    shiftleft.b = 0;
+        
+    case(alufn[0]){
+      b0:  // SHL
+        shiftleft.a = a;
+        shiftleft.b = b;
+        q = shiftleft.q;
+      b1:  //SHR and SRA
+        shiftright.alufn1 = alufn[1];
+        shiftright.a = a;
+        shiftright.b = b;
+        q = shiftright.q;
+      default:
+        shiftleft.a = a;
+        shiftleft.b = b;
+        q = shiftleft.q;
+    }
+  }
+}
