@@ -1,0 +1,663 @@
+module tester (
+    input clk,  // clock
+    input rst,  // reset
+    input trigger, // use for triggering next state
+    input button, // use to start testing
+    input detected[8],
+    output expected[8],
+    output a[8],
+    output b[8],
+    output alufn[6],
+    output out[8]
+  ) {
+  //Declaring all the state to be checked
+  .clk(clk) {
+    .rst(rst) {
+      fsm state = {IDLE,ADD1,ADD2,ADD3,SUB1,SUB2,SUB3,CMPEQ1,CMPEQ2,CMPLT1,CMPLT2,CMPLT3,CMPLE1,CMPLE2,CMPLE3,AND1,AND2,AND3,AND4,OR1,OR2,OR3,OR4,XOR1,XOR2,XOR3,XOR4,A,SHL1,SHL2,SHL3,SHL4,SHL5,SHR1,SHR2,SHR3,SHR4,SHR5,SRA1,SRA2,SRA3,SRA4,SRA5,WRONG}; // default will be IDLE
+    }
+  }
+  var exp;
+  
+  //Declaring all the I/O for test cases
+  always {
+    out = 8x{0};
+    a = 8b0;
+    b = 8b0;
+    alufn = 6b0;
+    exp = 8b0;
+    expected = exp;
+    
+    //Idle case
+    case(state.q) {
+      state.IDLE:
+        out =  8x{1};
+        if (button) {
+          state.d = state.ADD1;
+        }
+      //Checking adding whether 10+12 = 22
+      state.ADD1:
+        a = 8b00001010;
+        b = 8b00001100;
+        exp = 8b00010110;
+        alufn = 6b000000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.ADD2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+       //Checking adding whether -56+55 = -1
+       state.ADD2:
+        a = 8b11001000;
+        b = 8b00110111;
+        exp = 8b11111111;
+        alufn = 6b000000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.ADD3;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+        //Checking adding whether 100+46 = 146
+       state.ADD3:
+        a = 8b01100100;
+        b = 8b00101110;
+        exp = 8b10010010;
+        alufn = 6b000000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SUB1;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+        //Checking adding whether 10+12 = -2
+       state.SUB1:
+        a = 8b00001010;
+        b = 8b00001100;
+        exp = 8b11111110;
+        alufn = 6b000001;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SUB2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      
+      state.SUB2:
+      //Checking adding whether 10+12 = -2
+        a = 8b11001000;
+        b = 8b00110111;
+        exp = 8b10010001;
+        alufn = 6b000001;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SUB3;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking adding whether 100+46 = 54
+      state.SUB3:
+        a = 8b01100100;
+        b = 8b00101110;
+        exp = 8b00110110;
+        alufn = 6b000001;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.CMPEQ1;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether 10 is equal to 10
+      //It should be true
+      state.CMPEQ1:
+        a = 8b00001010;
+        b = 8b00001010;
+        exp = 8b00000001;
+        alufn = 6b110011;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.CMPEQ2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether 10 is equal to 12
+      //It should be false
+      state.CMPEQ2:
+        a = 8b00001010;
+        b = 8b00001100;
+        exp = 8b000000000;
+        alufn = 6b110011;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.CMPLT1;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether 10 is less than 10
+      //It should be false
+      state.CMPLT1:
+        a = 8b00001010;
+        b = 8b00001010;
+        exp = 8b00000000;
+        alufn = 6b110101;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.CMPLT2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether 12 is less than 10
+      //It should be false
+      
+      state.CMPLT2:
+        a = 8b00001100;
+        b = 8b00001010;
+        exp = 8b00000000;
+        alufn = 6b110101;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.CMPLT3;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      
+      //Checking whether 10 is less than 12
+      //It should be true
+      state.CMPLT3:
+        a = 8b00001010;
+        b = 8b00001100;
+        exp = 8b00000001;
+        alufn = 6b110101;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.CMPLE1;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+
+      //Checking whether 10 is equal or less than 10
+      //It should be true
+
+      state.CMPLE1:
+        a = 8b00001010;
+        b = 8b00001010;
+        exp = 8b00000001;
+        alufn = 6b110111;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.CMPLE2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether 12 is equal or less than 10
+      //It should be false
+
+      state.CMPLE2:
+        a = 8b00001100;
+        b = 8b00001010;
+        exp = 8b00000000;
+        alufn = 6b110111;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.CMPLE3;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether 10 is equal or less than 12
+      //It should be true
+
+      state.CMPLE3:
+        a = 8b00001010;
+        b = 8b00001100;
+        exp = 8b00000001;
+        alufn = 6b110111;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.AND1;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(00001010) AND of inputB:(00001100)
+      //Expected output should be output(00001000)
+
+      state.AND1:
+        a = 8b00001010;
+        b = 8b00001100;
+        exp = 8b00001000;
+        alufn = 6b011000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.AND2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(11000101) AND of inputB:(01001101)
+      //Expected output should be output(01000101)
+      state.AND2:
+        a = 8b11000101;
+        b = 8b01001101;
+        exp = 8b01000101;
+        alufn = 6b011000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.AND3;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(10100011) AND of inputB:(01011100)
+      //Expected output should be output(00000000)
+      state.AND3:
+        a = 8b10100011;
+        b = 8b01011100;
+        exp = 8b00000000;
+        alufn = 6b011000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.AND4;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(11000011) AND of inputB:(11000011)
+      //Expected output should be output(11000011)
+      state.AND4:
+        a = 8b11000011;
+        b = 8b11000011;
+        exp = 8b11000011;
+        alufn = 6b011000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.OR1;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(00001010) OR of inputB:(00001100)
+      //Expected output should be output(00001110)
+      state.OR1:
+        a = 8b00001010;
+        b = 8b00001100;
+        exp = 8b00001110;
+        alufn = 6b011110;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.OR2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(11000101) OR of inputB:(01001101)
+      //Expected output should be output(11001101)
+      state.OR2:
+        a = 8b11000101;
+        b = 8b01001101;
+        exp = 8b11001101;
+        alufn = 6b011110;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.OR3;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(10100011) OR of inputB:(01011100)
+      //Expected output should be output(11111111)
+      state.OR3:
+        a = 8b10100011;
+        b = 8b01011100;
+        exp = 8b11111111;
+        alufn = 6b011110;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.OR4;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(11000011) OR of inputB:(11000011)
+      //Expected output should be output(11000011)
+      state.OR4:
+        a = 8b11000011;
+        b = 8b11000011;
+        exp = 8b11000011;
+        alufn = 6b011110;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.XOR1;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(00001010) XOR of inputB:(00001100)
+      //Expected output should be output(00000110)
+      state.XOR1:
+        a = 8b00001010;
+        b = 8b00001100;
+        exp = 8b00000110;
+        alufn = 6b010110;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.XOR2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(11000101) XOR of inputB:(01001101)
+      //Expected output should be output(10001000)
+      state.XOR2:
+        a = 8b11000101;
+        b = 8b01001101;
+        exp = 8b10001000;
+        alufn = 6b010110;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.XOR3;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(10100011) XOR of inputB:(01011100)
+      //Expected output should be output(11111111)
+      state.XOR3:
+        a = 8b10100011;
+        b = 8b01011100;
+        exp = 8b11111111;
+        alufn = 6b010110;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.XOR4;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether inputA:(11000011) XOR of inputB:(11000011)
+      //Expected output should be output(00000000)
+      state.XOR4:
+        a = 8b11000011;
+        b = 8b11000011;
+        exp = 8b00000000;
+        alufn = 6b010110;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.A;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether input of A is still equal to A
+      state.A:
+        a = 8b00001010;
+        b = 8b00000000;
+        exp = 8b00001010;
+        alufn = 6b011010;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SHL1;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift left of (0) bit from (00001111) is (00001111)
+      state.SHL1:
+        a = 8b00001111;
+        b = 8b00000000;
+        exp = 8b00001111;
+        alufn = 6b100000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SHL2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift left of (4) bit from (00001111) is (11110000)
+      state.SHL2:
+        a = 8b00001111;
+        b = 8b00000100;
+        exp = 8b11110000;
+        alufn = 6b100000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SHL3;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift left of (4) bit from (11111111) is (11110000)
+      state.SHL3:
+        a = 8b11111111;
+        b = 8b00000100;
+        exp = 8b11110000;
+        alufn = 6b100000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SHL4;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift left of (8) bit from (00001111) is (00000000)
+      state.SHL4:
+        a = 8b00001111;
+        b = 8b00001000;
+        exp = 8b00000000;
+        alufn = 6b100000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SHL5;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift left of (8) bit from (11111111) is (00000000)
+      state.SHL5:
+        a = 8b11111111;
+        b = 8b00001000;
+        exp = 8b00000000;
+        alufn = 6b100000;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SHR1;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift right of (0) bit from (00001111) is (00001111)
+      state.SHR1:
+        a = 8b00001111;
+        b = 8b00000000;
+        exp = 8b00001111;
+        alufn = 6b100001;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SHR2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift right of (4) bit from (11110000) is (00001111)
+      state.SHR2:
+        a = 8b11110000;
+        b = 8b00000100;
+        exp = 8b00001111;
+        alufn = 6b100001;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SHR3;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift right of (4) bit from (11111111) is (00001111)
+      state.SHR3:
+        a = 8b11111111;
+        b = 8b00000100;
+        exp = 8b00001111;
+        alufn = 6b100001;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SHR4;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift right of (8) bit from (11110000) is (00000000)
+      state.SHR4:
+          a = 8b11110000;
+          b = 8b00001000;
+          exp = 8b00000000;
+          alufn = 6b100001;
+          expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SHR5;
+          } else {
+            state.d = state.WRONG;
+          }
+        } 
+      //Checking whether shift right of (8) bit from (11111111) is (00000000)
+      state.SHR5:
+        a = 8b11111111;
+        b = 8b00001000;
+        exp = 8b00000000;
+        alufn = 6b100001;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SRA1;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift right arithmetic of (0) bit from (00001111) is (00001111)
+      state.SRA1:
+        a = 8b00001111;
+        b = 8b00000000;
+        exp = 8b00001111;
+        alufn = 6b100011;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SRA2;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift right arithmetic of (4) bit from (11110000) is (11111111)
+      state.SRA2:
+        a = 8b11110000;
+        b = 8b00000100;
+        exp = 8b11111111;
+        alufn = 6b100011;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SRA3;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift right arithmetic of (4) bit from (01111111) is (00000111)
+      state.SRA3:
+        a = 8b01111111;
+        b = 8b00000100;
+        exp = 8b00000111;
+        alufn = 6b100011;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SRA4;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift right arithmetic of (8) bit from (11110000) is (11111111)
+      state.SRA4:
+        a = 8b11110000;
+        b = 8b00001000;
+        exp = 8b11111111;
+        alufn = 6b100011;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.SRA5;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      //Checking whether shift right arithmetic of (8) bit from (01111111) is (00000000)
+      state.SRA5:
+        a = 8b01111111;
+        b = 8b00001000;
+        exp = 8b00000000;
+        alufn = 6b100011;
+        expected = exp;
+        if (trigger) {
+          if (exp == detected) {
+            state.d = state.IDLE;
+          } else {
+            state.d = state.WRONG;
+          }
+        }
+      
+      //If the state is wrong  
+      state.WRONG:
+        out = 8b01001001;
+        if (button) {
+          state.d = state.IDLE;
+        }
+    }
+    
+  }
+}
