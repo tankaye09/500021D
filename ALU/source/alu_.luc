@@ -31,7 +31,7 @@ module alu_ (              // MAIN ALU MODULE THAT SELECTS WHICH OPERATION BASED
     
     // shifter
     shifter.a = a;
-    shifter.b = b[3:0];
+    shifter.b = b;
     shifter.alufn = alufn[1:0];
     
     // boolean

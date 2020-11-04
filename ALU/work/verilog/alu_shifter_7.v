@@ -7,7 +7,7 @@
 module alu_shifter_7 (
     input [1:0] alufn,
     input [15:0] a,
-    input [3:0] b,
+    input [15:0] b,
     output reg [15:0] q
   );
   
@@ -43,14 +43,26 @@ module alu_shifter_7 (
     case (alufn[0+0-:1])
       1'h0: begin
         M_shiftleft_a = a;
-        M_shiftleft_b = b;
-        q = M_shiftleft_q;
+        M_shiftleft_b = b[0+3-:4];
+        if (b >= 5'h10) begin
+          q = 16'h0000;
+        end else begin
+          q = M_shiftleft_q;
+        end
       end
       1'h1: begin
         M_shiftright_alufn1 = alufn[1+0-:1];
         M_shiftright_a = a;
-        M_shiftright_b = b;
-        q = M_shiftright_q;
+        M_shiftright_b = b[0+3-:4];
+        if (b >= 5'h10) begin
+          if (alufn[1+0-:1] == 1'h0) begin
+            q = 16'h0000;
+          end else begin
+            q = 5'h10 * a[15+0-:1];
+          end
+        end else begin
+          q = M_shiftright_q;
+        end
       end
       default: begin
         M_shiftleft_a = a;

@@ -251,7 +251,7 @@ module alu_tester_2 (
       SHL2_state: begin
         a = 16'hf18f;
         b = 16'h0011;
-        expout = 16'he31e;
+        expout = 16'h0000;
         alufn = 6'h20;
         state_index = M_state_cout_out;
         if (expout == actout) begin
@@ -281,7 +281,7 @@ module alu_tester_2 (
       SHR2_state: begin
         a = 16'hf18f;
         b = 16'h0011;
-        expout = 16'h78c7;
+        expout = 16'h0000;
         alufn = 6'h21;
         state_index = M_state_cout_out;
         if (expout == actout) begin
@@ -311,7 +311,7 @@ module alu_tester_2 (
       SRA2_state: begin
         a = 16'hf18f;
         b = 16'h0011;
-        expout = 16'hf8c7;
+        expout = 5'h10;
         alufn = 6'h23;
         state_index = M_state_cout_out;
         if (expout == actout) begin

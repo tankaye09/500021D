@@ -38,7 +38,7 @@ module alu_mul_10 (
   wire [(4'hf+0)*16-1:0] M_shifter_q;
   reg [(4'hf+0)*2-1:0] M_shifter_alufn;
   reg [(4'hf+0)*16-1:0] M_shifter_a;
-  reg [(4'hf+0)*4-1:0] M_shifter_b;
+  reg [(4'hf+0)*16-1:0] M_shifter_b;
   
   genvar GEN_shifter0;
   generate
@@ -46,7 +46,7 @@ module alu_mul_10 (
     alu_shifter_7 shifter (
       .alufn(M_shifter_alufn[GEN_shifter0*(2'h2)+(2'h2)-1-:(2'h2)]),
       .a(M_shifter_a[GEN_shifter0*(5'h10)+(5'h10)-1-:(5'h10)]),
-      .b(M_shifter_b[GEN_shifter0*(3'h4)+(3'h4)-1-:(3'h4)]),
+      .b(M_shifter_b[GEN_shifter0*(5'h10)+(5'h10)-1-:(5'h10)]),
       .q(M_shifter_q[GEN_shifter0*(5'h10)+(5'h10)-1-:(5'h10)])
     );
   end
@@ -88,63 +88,63 @@ module alu_mul_10 (
     q = 1'h0;
     s0[0+15-:16] = ({5'h10{a[0+0-:1]}}) & (b[0+15-:16]);
     M_shifter_a[0+15-:16] = ({5'h10{a[1+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[0+3-:4] = 1'h1;
+    M_shifter_b[0+15-:16] = 1'h1;
     M_shifter_alufn[0+1-:2] = 3'h0;
     s1[0+15-:16] = M_shifter_q[0+15-:16];
     M_shifter_a[16+15-:16] = ({5'h10{a[2+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[4+3-:4] = 2'h2;
+    M_shifter_b[16+15-:16] = 2'h2;
     M_shifter_alufn[2+1-:2] = 3'h0;
     s2[0+15-:16] = M_shifter_q[16+15-:16];
     M_shifter_a[32+15-:16] = ({5'h10{a[3+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[8+3-:4] = 2'h3;
+    M_shifter_b[32+15-:16] = 2'h3;
     M_shifter_alufn[4+1-:2] = 3'h0;
     s3[0+15-:16] = M_shifter_q[32+15-:16];
     M_shifter_a[48+15-:16] = ({5'h10{a[4+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[12+3-:4] = 3'h4;
+    M_shifter_b[48+15-:16] = 3'h4;
     M_shifter_alufn[6+1-:2] = 3'h0;
     s4[0+15-:16] = M_shifter_q[48+15-:16];
     M_shifter_a[64+15-:16] = ({5'h10{a[5+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[16+3-:4] = 3'h5;
+    M_shifter_b[64+15-:16] = 3'h5;
     M_shifter_alufn[8+1-:2] = 3'h0;
     s5[0+15-:16] = M_shifter_q[64+15-:16];
     M_shifter_a[80+15-:16] = ({5'h10{a[6+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[20+3-:4] = 3'h6;
+    M_shifter_b[80+15-:16] = 3'h6;
     M_shifter_alufn[10+1-:2] = 3'h0;
     s6[0+15-:16] = M_shifter_q[80+15-:16];
     M_shifter_a[96+15-:16] = ({5'h10{a[7+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[24+3-:4] = 3'h7;
+    M_shifter_b[96+15-:16] = 3'h7;
     M_shifter_alufn[12+1-:2] = 3'h0;
     s7[0+15-:16] = M_shifter_q[96+15-:16];
     M_shifter_a[112+15-:16] = ({5'h10{a[8+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[28+3-:4] = 4'h8;
+    M_shifter_b[112+15-:16] = 4'h8;
     M_shifter_alufn[14+1-:2] = 3'h0;
     s8[0+15-:16] = M_shifter_q[112+15-:16];
     M_shifter_a[128+15-:16] = ({5'h10{a[9+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[32+3-:4] = 4'h9;
+    M_shifter_b[128+15-:16] = 4'h9;
     M_shifter_alufn[16+1-:2] = 3'h0;
     s9[0+15-:16] = M_shifter_q[128+15-:16];
     M_shifter_a[144+15-:16] = ({5'h10{a[10+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[36+3-:4] = 4'ha;
+    M_shifter_b[144+15-:16] = 4'ha;
     M_shifter_alufn[18+1-:2] = 3'h0;
     s10[0+15-:16] = M_shifter_q[144+15-:16];
     M_shifter_a[160+15-:16] = ({5'h10{a[11+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[40+3-:4] = 4'hb;
+    M_shifter_b[160+15-:16] = 4'hb;
     M_shifter_alufn[20+1-:2] = 3'h0;
     s11[0+15-:16] = M_shifter_q[160+15-:16];
     M_shifter_a[176+15-:16] = ({5'h10{a[12+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[44+3-:4] = 4'hc;
+    M_shifter_b[176+15-:16] = 4'hc;
     M_shifter_alufn[22+1-:2] = 3'h0;
     s12[0+15-:16] = M_shifter_q[176+15-:16];
     M_shifter_a[192+15-:16] = ({5'h10{a[13+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[48+3-:4] = 4'hd;
+    M_shifter_b[192+15-:16] = 4'hd;
     M_shifter_alufn[24+1-:2] = 3'h0;
     s13[0+15-:16] = M_shifter_q[192+15-:16];
     M_shifter_a[208+15-:16] = ({5'h10{a[14+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[52+3-:4] = 4'he;
+    M_shifter_b[208+15-:16] = 4'he;
     M_shifter_alufn[26+1-:2] = 3'h0;
     s14[0+15-:16] = M_shifter_q[208+15-:16];
     M_shifter_a[224+15-:16] = ({5'h10{a[15+0-:1]}}) & (b[0+15-:16]);
-    M_shifter_b[56+3-:4] = 4'hf;
+    M_shifter_b[224+15-:16] = 4'hf;
     M_shifter_alufn[28+1-:2] = 3'h0;
     s15[0+15-:16] = M_shifter_q[224+15-:16];
     M_adder_alufn0 = 1'h0;

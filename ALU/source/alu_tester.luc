@@ -222,11 +222,11 @@ module alu_tester (
 		        state.d = state.SHL2; //auto proceed to the next test state regardless
         }
         
-      //Checking whether shift left of (17) bit from (1111000110001111) is treated as shift left of (1) bit, exp (1110001100011110)
+      //Checking whether shift left of (17) bit from (1111000110001111), exp (16b0)
       state.SHL2:
         a = 16b1111000110001111;
         b = 16b0000000000010001;
-        expout = 16b1110001100011110;
+        expout = 16b0;
         alufn = 6b100000;
         state_index = state_cout.out;
         if (expout == actout) {
@@ -252,11 +252,11 @@ module alu_tester (
         if (next) {
 		        state.d = state.SHR2; //auto proceed to the next test state regardless
         }
-      //Checking whether shift right of (17) bit from (1111000110001111) is treated as shift right of (1) bit, exp (0111100011000111)
+      //Checking whether shift right of (17) bit from (1111000110001111), exp (16b0)
       state.SHR2:
         a = 16b1111000110001111;
         b = 16b0000000000010001;
-        expout = 16b0111100011000111;
+        expout = 16b0;
         alufn = 6b100001;
         state_index = state_cout.out;
         if (expout == actout) {
@@ -284,11 +284,11 @@ module alu_tester (
         state.d = state.SRA2; // Move on to the next test case
       }
     
-    //Checking whether shift right of (17) bit from (1111000110001111) is treated as shift right of (1) bit, exp (1111100011000111)
+    //Checking whether shift right of (17) bit from (1111000110001111), exp (1111111111111111)
     state.SRA2:
       a = 16b1111000110001111;
       b = 16b0000000000010001;
-      expout = 16b1111100011000111;
+      expout = 16 * b1;
       alufn = 6b100011;
       state_index = state_cout.out;
       if (expout == actout) {

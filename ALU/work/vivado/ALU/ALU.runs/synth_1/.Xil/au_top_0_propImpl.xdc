@@ -1,5 +1,5 @@
-set_property SRC_FILE_INFO {cfile:{C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/ALU/work/constraint/alchitry.xdc} rfile:../../../../../constraint/alchitry.xdc id:1} [current_design]
-set_property SRC_FILE_INFO {cfile:{C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/ALU/work/constraint/io.xdc} rfile:../../../../../constraint/io.xdc id:2} [current_design]
+set_property SRC_FILE_INFO {cfile:{C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/constraint/alchitry.xdc} rfile:../../../../../constraint/alchitry.xdc id:1} [current_design]
+set_property SRC_FILE_INFO {cfile:{C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/constraint/io.xdc} rfile:../../../../../constraint/io.xdc id:2} [current_design]
 set_property src_info {type:XDC file:1 line:3 export:INPUT save:INPUT read:READ} [current_design]
 set_property PACKAGE_PIN N14 [get_ports {clk}]
 set_property src_info {type:XDC file:1 line:5 export:INPUT save:INPUT read:READ} [current_design]

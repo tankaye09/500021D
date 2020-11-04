@@ -1,7 +1,7 @@
 Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-| Date         : Wed Nov  4 13:29:48 2020
+| Date         : Wed Nov  4 16:52:42 2020
 | Host         : DESKTOP-1K67A6C running 64-bit major release  (build 9200)
 | Command      : report_control_sets -verbose -file au_top_0_control_sets_placed.rpt
 | Design       : au_top_0
@@ -63,24 +63,24 @@ Table of Contents
 | No           | Yes                   | No                     |              10 |            5 |
 | Yes          | No                    | No                     |               0 |            0 |
 | Yes          | No                    | Yes                    |               0 |            0 |
-| Yes          | Yes                   | No                     |              85 |           34 |
+| Yes          | Yes                   | No                     |              85 |           38 |
 +--------------+-----------------------+------------------------+-----------------+--------------+
 
 
 4. Detailed Control Set Information
 -----------------------------------
 
-+---------------------------------------+--------------------------+----------------------------+------------------+----------------+--------------+
-|              Clock Signal             |       Enable Signal      |      Set/Reset Signal      | Slice Load Count | Bel Load Count | Bels / Slice |
-+---------------------------------------+--------------------------+----------------------------+------------------+----------------+--------------+
-|  tester/FSM_onehot_M_state_q_reg[7]_0 |                          |                            |                1 |              1 |         1.00 |
-|  clk_IBUF_BUFG                        |                          |                            |                2 |              3 |         1.50 |
-|  clk_IBUF_BUFG                        |                          | reset_cond/M_reset_cond_in |                1 |              4 |         4.00 |
-|  clk_IBUF_BUFG                        |                          | reset_cond/Q[0]            |                4 |              6 |         1.50 |
-|  clk_IBUF_BUFG                        | p_0_in                   | reset_cond/Q[0]            |                8 |             16 |         2.00 |
-|  clk_IBUF_BUFG                        | io_dip_IBUF[16]          | reset_cond/Q[0]            |                9 |             16 |         1.78 |
-|  clk_IBUF_BUFG                        | buttoncond/sel           | buttoncond/sync/clear      |                5 |             20 |         4.00 |
-|  clk_IBUF_BUFG                        | buttoncond/M_tester_next | reset_cond/Q[0]            |               12 |             33 |         2.75 |
-+---------------------------------------+--------------------------+----------------------------+------------------+----------------+--------------+
++----------------------------------------+-----------------+----------------------------+------------------+----------------+--------------+
+|              Clock Signal              |  Enable Signal  |      Set/Reset Signal      | Slice Load Count | Bel Load Count | Bels / Slice |
++----------------------------------------+-----------------+----------------------------+------------------+----------------+--------------+
+|  tester/FSM_onehot_M_state_q_reg[32]_0 |                 |                            |                1 |              1 |         1.00 |
+|  clk_IBUF_BUFG                         |                 |                            |                2 |              3 |         1.50 |
+|  clk_IBUF_BUFG                         |                 | reset_cond/M_reset_cond_in |                2 |              4 |         2.00 |
+|  clk_IBUF_BUFG                         |                 | reset_cond/Q[0]            |                3 |              6 |         2.00 |
+|  clk_IBUF_BUFG                         | p_0_in          | reset_cond/Q[0]            |                6 |             16 |         2.67 |
+|  clk_IBUF_BUFG                         | io_dip_IBUF[16] | reset_cond/Q[0]            |               10 |             16 |         1.60 |
+|  clk_IBUF_BUFG                         | buttoncond/sel  | buttoncond/sync/clear      |                5 |             20 |         4.00 |
+|  clk_IBUF_BUFG                         | buttoncond/E[0] | reset_cond/Q[0]            |               17 |             33 |         1.94 |
++----------------------------------------+-----------------+----------------------------+------------------+----------------+--------------+
 
 

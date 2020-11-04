@@ -43,8 +43,8 @@ module state_counter_12 (
     M_adder_a = M_register_1_q;
     M_adder_alufn0 = 1'h0;
     if (M_adder_q < 6'h21) begin
-      M_register_1_d = M_adder_q;
-      out = M_adder_q;
+      M_register_1_d = M_adder_q[0+6-:7];
+      out = M_adder_q[0+6-:7];
     end else begin
       M_register_1_d = 1'h0;
       out = 1'h0;

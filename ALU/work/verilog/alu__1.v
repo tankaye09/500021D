@@ -33,7 +33,7 @@ module alu__1 (
   wire [16-1:0] M_shifter_q;
   reg [2-1:0] M_shifter_alufn;
   reg [16-1:0] M_shifter_a;
-  reg [4-1:0] M_shifter_b;
+  reg [16-1:0] M_shifter_b;
   alu_shifter_7 shifter (
     .alufn(M_shifter_alufn),
     .a(M_shifter_a),
@@ -99,7 +99,7 @@ module alu__1 (
     v = M_adder_v;
     n = M_adder_n;
     M_shifter_a = a;
-    M_shifter_b = b[0+3-:4];
+    M_shifter_b = b;
     M_shifter_alufn = alufn[0+1-:2];
     M_bool_a = a;
     M_bool_b = b;
