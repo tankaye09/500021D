@@ -311,7 +311,7 @@ module alu_tester_2 (
       SRA2_state: begin
         a = 16'hf18f;
         b = 16'h0011;
-        expout = 5'h10;
+        expout = 16'hffff;
         alufn = 6'h23;
         state_index = M_state_cout_out;
         if (expout == actout) begin

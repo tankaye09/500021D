@@ -32,12 +32,12 @@ module alu_shifter (  // USES A MUX TO SELECT BETWEEN SHIFTLEFT AND SHIFTRIGHT
           if (alufn[1] == 0) { // if shift right by more than 15 bits, output is all 0s
             q = 16b0;
           }
-          else {q = 16*a[15];}  // if shift right arithmetic by more than 15 bits, output is all a[15]
+          else {q = 16x{a[15]};}  // if shift right arithmetic by more than 15 bits, output is all a[15]
         } else {q = shiftright.q;}
         
       default: // default case is SHL
         shiftleft.a = a;
-        shiftleft.b = b;
+        shiftleft.b = b[3:0];
         q = shiftleft.q;
     }
   }

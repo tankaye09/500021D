@@ -288,7 +288,7 @@ module alu_tester (
     state.SRA2:
       a = 16b1111000110001111;
       b = 16b0000000000010001;
-      expout = 16 * b1;
+      expout = 16x{b1};
       alufn = 6b100011;
       state_index = state_cout.out;
       if (expout == actout) {

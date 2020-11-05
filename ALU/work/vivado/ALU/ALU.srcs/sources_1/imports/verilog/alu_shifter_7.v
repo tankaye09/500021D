@@ -58,7 +58,7 @@ module alu_shifter_7 (
           if (alufn[1+0-:1] == 1'h0) begin
             q = 16'h0000;
           end else begin
-            q = 5'h10 * a[15+0-:1];
+            q = {5'h10{a[15+0-:1]}};
           end
         end else begin
           q = M_shiftright_q;
@@ -66,7 +66,7 @@ module alu_shifter_7 (
       end
       default: begin
         M_shiftleft_a = a;
-        M_shiftleft_b = b;
+        M_shiftleft_b = b[0+3-:4];
         q = M_shiftleft_q;
       end
     endcase
