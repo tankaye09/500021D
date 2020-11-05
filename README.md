@@ -11,8 +11,13 @@ alu_ is the alu module that integrates the alu operator modules
 alu operator modules:
 
 alu_adder is the adder and subtractor module.
+
 alu_bool is the boolean operator module.
+
 alu_cmp is the comparator module.
+
 alu_mod is the modulo operator module.
+
 alu_mul is the multiplier module.
+
 alu_shifter is the shifter module.
