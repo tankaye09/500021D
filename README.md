@@ -8,10 +8,7 @@ alu_tester is the test module that can be used or modified to add more test case
 
 alu_ is the alu module that integrates the alu operator modules
 
-
-
-
-alu operator modules:
+# alu operator modules:
 
 alu_adder is the adder and subtractor module.
 
