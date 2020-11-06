@@ -8,7 +8,7 @@ module alu_shiftright ( // SHIFTS A BY UP TO 15 BITS TO THE RIGHT
   sig w[16];
   sig x[16];
   sig y[16];
-  sig p; // padding either 0s or a31s
+  sig p; // padding either 0 or a15
   always {
     arithmeticmux.a = a[15];
     arithmeticmux.alufn1 = alufn1;
