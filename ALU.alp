@@ -18,7 +18,6 @@
     <src>alu_bool.luc</src>
     <component>reset_conditioner.luc</component>
     <src>full_adder.luc</src>
-    <component>edge_detector.luc</component>
     <src>alu_adder.luc</src>
     <src>tester_sk.luc</src>
     <constraint lib="true">alchitry.acf</constraint>

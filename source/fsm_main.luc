@@ -12,7 +12,7 @@ module fsm_main (
     output we,
     output ra[4],
     output rb[4],
-    output rc[4]
+    output rc[4],
     
   ) {
   .clk(clk) {
@@ -21,6 +21,7 @@ module fsm_main (
     }
   }
   var col[16];
+  var store
 
   always {
     asel = 2b0;
@@ -110,7 +111,7 @@ module fsm_main (
         if (alu == 16b1) {
           state.d = state.RANDCOLOUR;
         } else {
-          state.d = state.STORECOL1;
+          state.d = state.STORECOL;
         }
       
       // Get randgen output from B
@@ -140,45 +141,19 @@ module fsm_main (
         we = b1;
         state.d = state.BRANCHCOL;
       
-      // Store the [13:12] of row 1 as the [7:6] of the temp reg
+      // Store the [6:7] of row 1 as the [6:7] of the temp reg
       state.STORECOL1:
-        alufn = 6b111000; // SHAD12
-        asel = 2b00;
-        bsel = 3b100; // select all 0s as the input of the 
-        ra = 4b0000; // select the address of column 0
-        rc = 4b1000; // store in Reg 8 which is the LastRow storage reg
-        state.d = state.STORECOL2;
+        
       
       state.STORECOL2:
-        alufn = 6b111001; // SHAD10
-        asel = 2b00;
-        bsel = 3b000; 
-        ra = 4b0001; // select the address of column 1
-        rb = 4b1000; // select the contents of the LastRow reg
-        rc = 4b1000;
-        state.d = state.STORECOL3;
       
       state.STORECOL3:
-        alufn = 6b111010; // SHAD8
-        asel = 2b00;
-        bsel = 3b000;
-        ra = 4b0010;
-        rb = 4b1000;
-        rc = 4b1000;
-        state.d = state.STORECOL4;
       
       state.STORECOL4:
-        alufn = 6b111011; // SHAD6
-        asel = 2b00;
-        bsel = 3b000;
-        ra = 4b0010;
-        rb = 4b1000;
-        rc = 4b1000;
-        state.d = state.STORECOL4;
         
         
       state.CHECKEMPTYROW:
-        alufn = 6b110011; //CMPEQ
+        alufn = 6b110011; //COMPEQ
         ra = 4b1101;
         rc = 4b0111;
         asel = 2b10;
@@ -319,7 +294,12 @@ module fsm_main (
       
       // Finish game
       state.END:
+        
         state.d = state.IDLE;
+      
+      state.IDLE:
+      
+
       
   }
 }
