@@ -12,19 +12,33 @@ module au_top (
   ) {
   
   sig rst;                  // reset signal
-  alu_ alu;  
   
   .clk(clk) {
     .rst(rst) {
-      dff register_a[16];
-      dff register_b[16];
-      alu_tester tester;
+      //basket_fsm basket_fsm;
+      main_fsm main_fsm;
+      
+      
     }
     // The reset conditioner is used to synchronize the reset signal to the FPGA
     // clock. This ensures the entire FPGA comes out of reset at the same time.
     reset_conditioner reset_cond;
-    button_conditioner buttoncond;
-    edge_detector buttondetector(#RISE(1), #FALL(0));
+    
+    // For basket_fsm test
+    
+    //button_conditioner left_buttoncond;
+    //edge_detector left_buttondetector(#RISE(1), #FALL(0));
+    //button_conditioner right_buttoncond;
+    //edge_detector right_buttondetector(#RISE(1), #FALL(0));
+    //button_conditioner colour_buttoncond;
+    //edge_detector colour_buttondetector(#RISE(1), #FALL(0));
+    
+    // For main_fsm test
+    
+    button_conditioner start_buttoncond;
+    edge_detector start_buttondetector(#RISE(1), #FALL(0));
+    
+    
   }
   
   always {
@@ -39,51 +53,47 @@ module au_top (
     io_seg = 8hff;          // turn segments off
     io_sel = 4hf;           // select no digits
     
-    // ALU setup
     
-    // Store a and b inputs by flipping the io_dip[1] and io_dip[0] switches
-    if(io_dip[2][0]){                      // if io_dip[2][0] is high, store io_dip[1] and io_dip[0] as a inputs
-      register_a.d[15:8] = io_dip[1];
-      register_a.d[7:0] = io_dip[0];
-    }
-    else {                                 // if io_dip[2][0] is low, store io_dip[1] and io_dip[0] as b inputs
-      register_b.d[15:8] = io_dip[1];
-      register_b.d[7:0] = io_dip[0];
-    }
-    
-    alu.a = 0;  // initialise with 0
-    alu.b = 0;  // initialise with 0
-    alu.alufn = 0;   // initialise with 0
-    io_led[1] = alu.q[15:8];  // 16 MSB of alu output shown in io_led[1]
-    io_led[0] = alu.q[7:0];   // 16 LSB of alu output shown in io_led[0]
-    
-    
-    // ALU auto tester setup
-    
-    buttoncond.in = io_button[0];  // button that triggers next state of tester circuit
-    buttondetector.in = buttoncond.out; // edge detector to ensure a single button press results in an output of 1 in 1 clk cycle only
-    tester.next = 0;  // initialise tester.next button as always 0 until ALU is in auto tester mode
-    tester.actout = 0;  // initialise actual output to be 0 until ALU is in auto tester mode
-
-    // implement mux with IO_DIP[2][1] as selector. If 0, ALU Operation, if 1, ALU Auto Tester
-    
-    case(io_dip[2][1]) {     
-      b0: // normal ALU operations
-        alu.a = register_a.q;                   // alu a input takes in register_a stored value
-        alu.b = register_b.q;                   // alu b input takes in register_b stored value
-        alu.alufn = io_dip[2][7:2];             // io_dip[2][7:2] = alufn6 - alufn0
-        //io_led[1] = alu.q[15:8];                // output sum of adder displayed in io_led[1] and io_led[0]
-        //io_led[0] = alu.q[7:0];
-      
-      b1: // ALU auto tester
-        tester.next = buttondetector.out;       // in tester mode, next button accepts the output of buttondetector
-        tester.actout = alu.q;                  // actual output given by the actual alu operation
         
-        io_led[2][0] = tester.q;                // output boolean of tester
-        io_led[2][7:1] = tester.state_index;    // current state index of tester
-        alu.a = tester.a;                       // a from tester as input a for alu
-        alu.b = tester.b;                       // b from tester as input b for alu
-        alu.alufn = tester.alufn;               // alufn from tester as input alufn for alu
-    }
-  }
+    
+    // test basket_fsm
+    
+    // left_buttoncond.in = io_button[0];  // button that triggers move left
+    // left_buttondetector.in = left_buttoncond.out;  // edge detector to ensure a single button press results in an output of 1 in 1 clk cycle only
+    //right_buttoncond.in = io_button[1];  // button that triggers move right
+    //right_buttondetector.in = right_buttoncond.out;
+    //colour_buttoncond.in = io_button[2];  // button that triggers move colour
+    //colour_buttondetector.in = colour_buttoncond.out;
+    
+    //basket_fsm.l = left_buttondetector.out;
+    //basket_fsm.r = right_buttondetector.out;
+    //basket_fsm.c = colour_buttondetector.out;
+    
+    //io_led[0] = basket_fsm.q;
+    
+    
+    // test main_fsm
+    
+    start_buttoncond.in = io_button[0];
+    start_buttondetector.in = start_buttoncond.out;
+    main_fsm.start = start_buttondetector.out;
+    main_fsm.clkhold = io_dip[1][0];
+    main_fsm.rd2 = 0;
+    main_fsm.alu = 0;
+    
+    case (io_dip[0][0]) {
+      b0:
+        io_led[2][7:6] = main_fsm.asel; // 2 bits
+        io_led[2][5:3] = main_fsm.bsel; // 3 bits
+        io_led[2][1] = main_fsm.stu; // 1 bits
+        io_led[2][0] = main_fsm.we; // 1 bits
+        io_led[1][7:2] = main_fsm.alufn; // 6 bits
+        
+      b1:
+        io_led[2] = main_fsm.ra; // 4 bits
+        io_led[1] = main_fsm.rb; // 4 bits 
+        io_led[0] = main_fsm.rc; // 4 bits
+    //}
+    
 }
+    

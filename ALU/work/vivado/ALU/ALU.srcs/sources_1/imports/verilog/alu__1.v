@@ -20,7 +20,7 @@ module alu__1 (
   reg [16-1:0] M_adder_a;
   reg [16-1:0] M_adder_b;
   reg [1-1:0] M_adder_alufn0;
-  alu_adder_6 adder (
+  alu_adder_3 adder (
     .a(M_adder_a),
     .b(M_adder_b),
     .alufn0(M_adder_alufn0),
@@ -34,7 +34,7 @@ module alu__1 (
   reg [2-1:0] M_shifter_alufn;
   reg [16-1:0] M_shifter_a;
   reg [16-1:0] M_shifter_b;
-  alu_shifter_7 shifter (
+  alu_shifter_4 shifter (
     .alufn(M_shifter_alufn),
     .a(M_shifter_a),
     .b(M_shifter_b),
@@ -45,7 +45,7 @@ module alu__1 (
   reg [16-1:0] M_bool_a;
   reg [16-1:0] M_bool_b;
   reg [6-1:0] M_bool_alufn;
-  alu_bool_8 bool (
+  alu_bool_5 bool (
     .a(M_bool_a),
     .b(M_bool_b),
     .alufn(M_bool_alufn),
@@ -58,7 +58,7 @@ module alu__1 (
   reg [1-1:0] M_cmp_z;
   reg [1-1:0] M_cmp_v;
   reg [1-1:0] M_cmp_n;
-  alu_cmp_9 cmp (
+  alu_cmp_6 cmp (
     .alufn2(M_cmp_alufn2),
     .alufn1(M_cmp_alufn1),
     .z(M_cmp_z),
@@ -70,7 +70,7 @@ module alu__1 (
   wire [16-1:0] M_mul_q;
   reg [16-1:0] M_mul_a;
   reg [16-1:0] M_mul_b;
-  alu_mul_10 mul (
+  alu_mul_7 mul (
     .a(M_mul_a),
     .b(M_mul_b),
     .q(M_mul_q)
@@ -79,10 +79,21 @@ module alu__1 (
   wire [16-1:0] M_mod_q;
   reg [16-1:0] M_mod_a;
   reg [16-1:0] M_mod_b;
-  alu_mod_11 mod (
+  alu_mod_8 mod (
     .a(M_mod_a),
     .b(M_mod_b),
     .q(M_mod_q)
+  );
+  
+  wire [16-1:0] M_shiftadd_q;
+  reg [16-1:0] M_shiftadd_a;
+  reg [16-1:0] M_shiftadd_b;
+  reg [2-1:0] M_shiftadd_alufn;
+  alu_shift_12_add_9 shiftadd (
+    .a(M_shiftadd_a),
+    .b(M_shiftadd_b),
+    .alufn(M_shiftadd_alufn),
+    .q(M_shiftadd_q)
   );
   
   reg z;
@@ -113,6 +124,9 @@ module alu__1 (
     M_mul_b = b;
     M_mod_a = a;
     M_mod_b = b;
+    M_shiftadd_a = a;
+    M_shiftadd_b = b;
+    M_shiftadd_alufn = alufn[0+1-:2];
     
     case (alufn[0+5-:6])
       6'h00: begin
@@ -159,6 +173,18 @@ module alu__1 (
       end
       6'h3f: begin
         q = M_mod_q;
+      end
+      6'h38: begin
+        q = M_shiftadd_q;
+      end
+      6'h39: begin
+        q = M_shiftadd_q;
+      end
+      6'h3a: begin
+        q = M_shiftadd_q;
+      end
+      6'h3b: begin
+        q = M_shiftadd_q;
       end
       default: begin
         q = 1'h0;

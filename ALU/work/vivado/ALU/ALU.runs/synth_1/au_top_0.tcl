@@ -85,23 +85,19 @@ OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 read_verilog -library xil_defaultlib {
   {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu__1.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_adder_6.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_adder_XB_15.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_bool_8.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_cmp_9.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_mod_11.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_mul_10.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_shifter_7.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_shiftleft_16.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_shiftright_17.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_shiftright_mux_18.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_tester_2.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/button_conditioner_4.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/edge_detector_5.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/full_adder_14.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/pipeline_13.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/reset_conditioner_3.v}
-  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/state_counter_12.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_adder_3.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_adder_XB_11.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_bool_5.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_cmp_6.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_mod_8.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_mul_7.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_shift_12_add_9.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_shifter_4.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_shiftleft_12.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_shiftright_13.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/alu_shiftright_mux_14.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/full_adder_10.v}
+  {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/reset_conditioner_2.v}
   {C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.srcs/sources_1/imports/verilog/au_top_0.v}
 }
 OPTRACE "Adding files" END { }

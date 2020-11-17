@@ -13,6 +13,7 @@ module alu_ (              // MAIN ALU MODULE THAT SELECTS WHICH OPERATION BASED
   alu_cmp cmp;
   alu_mul mul;
   alu_mod mod;
+  alu_shift_add shiftadd;
   
   // connectors
   
@@ -54,6 +55,11 @@ module alu_ (              // MAIN ALU MODULE THAT SELECTS WHICH OPERATION BASED
     mod.a = a;
     mod.b = b;
     
+    // alu_shift_12_add
+    shiftadd.a = a;
+    shiftadd.b = b;
+    shiftadd.alufn = alufn[1:0];
+    
     case(alufn[5:0]){
       6b000000:           // ADD
         q = adder.q;
@@ -85,6 +91,16 @@ module alu_ (              // MAIN ALU MODULE THAT SELECTS WHICH OPERATION BASED
         q = mul.q;
       6b111111:           // MOD
         q = mod.q;
+        
+      6b111000:
+        q = shiftadd.q;  // SHIFT 12 ADD
+      6b111001:
+        q = shiftadd.q;  // SHIFT 10 ADD
+      6b111010:
+        q = shiftadd.q;  // SHIFT 8 ADD
+      6b111011:
+        q = shiftadd.q;  // SHIFT 6 ADD
+        
       default:
         q = 0;
     }

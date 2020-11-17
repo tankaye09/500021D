@@ -34,44 +34,12 @@ module au_top_0 (
   
   reg [15:0] M_register_a_d, M_register_a_q = 1'h0;
   reg [15:0] M_register_b_d, M_register_b_q = 1'h0;
-  wire [16-1:0] M_tester_a;
-  wire [16-1:0] M_tester_b;
-  wire [6-1:0] M_tester_alufn;
-  wire [1-1:0] M_tester_q;
-  wire [7-1:0] M_tester_state_index;
-  reg [1-1:0] M_tester_next;
-  reg [16-1:0] M_tester_actout;
-  alu_tester_2 tester (
-    .clk(clk),
-    .rst(rst),
-    .next(M_tester_next),
-    .actout(M_tester_actout),
-    .a(M_tester_a),
-    .b(M_tester_b),
-    .alufn(M_tester_alufn),
-    .q(M_tester_q),
-    .state_index(M_tester_state_index)
-  );
   wire [1-1:0] M_reset_cond_out;
   reg [1-1:0] M_reset_cond_in;
-  reset_conditioner_3 reset_cond (
+  reset_conditioner_2 reset_cond (
     .clk(clk),
     .in(M_reset_cond_in),
     .out(M_reset_cond_out)
-  );
-  wire [1-1:0] M_buttoncond_out;
-  reg [1-1:0] M_buttoncond_in;
-  button_conditioner_4 buttoncond (
-    .clk(clk),
-    .in(M_buttoncond_in),
-    .out(M_buttoncond_out)
-  );
-  wire [1-1:0] M_buttondetector_out;
-  reg [1-1:0] M_buttondetector_in;
-  edge_detector_5 buttondetector (
-    .clk(clk),
-    .in(M_buttondetector_in),
-    .out(M_buttondetector_out)
   );
   
   always @* begin
@@ -92,32 +60,11 @@ module au_top_0 (
       M_register_b_d[8+7-:8] = io_dip[8+7-:8];
       M_register_b_d[0+7-:8] = io_dip[0+7-:8];
     end
-    M_alu_a = 1'h0;
-    M_alu_b = 1'h0;
-    M_alu_alufn = 1'h0;
+    M_alu_a = M_register_a_q;
+    M_alu_b = M_register_b_q;
+    M_alu_alufn = io_dip[16+2+5-:6];
     io_led[8+7-:8] = M_alu_q[8+7-:8];
     io_led[0+7-:8] = M_alu_q[0+7-:8];
-    M_buttoncond_in = io_button[0+0-:1];
-    M_buttondetector_in = M_buttoncond_out;
-    M_tester_next = 1'h0;
-    M_tester_actout = 1'h0;
-    
-    case (io_dip[16+1+0-:1])
-      1'h0: begin
-        M_alu_a = M_register_a_q;
-        M_alu_b = M_register_b_q;
-        M_alu_alufn = io_dip[16+2+5-:6];
-      end
-      1'h1: begin
-        M_tester_next = M_buttondetector_out;
-        M_tester_actout = M_alu_q;
-        io_led[16+0+0-:1] = M_tester_q;
-        io_led[16+1+6-:7] = M_tester_state_index;
-        M_alu_a = M_tester_a;
-        M_alu_b = M_tester_b;
-        M_alu_alufn = M_tester_alufn;
-      end
-    endcase
   end
   
   always @(posedge clk) begin
