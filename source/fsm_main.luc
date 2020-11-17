@@ -19,6 +19,7 @@ module fsm_main (
       fsm state = {INCREASECOUNT, SHIFTBLOCK1, SHIFTBLOCK2, SHIFTBLOCK3, SHIFTBLOCK4, RANDCOL, CHECKCOL, BRANCHCOL, RANDCOLOUR, ADDCOLOR, ADDBLOCK, STORECOL, CHECKEMPTYROW, BRANCHEMPTYROW, CHECKPLAYERPOS, BRANCHSCORE, CHECKCOMBO, ADDCOMBO, MULCOMBO, ADDSCORE, RESETCOMBO, MINUSHEALTH, CHECKHEALTH, BRANCHHEALTH, COUNTERMOD, CHECKMOD, INCREASECLK, CLKHOLD, END, IDLE}; // default will be IDLE
     }
   }
+  var col[16];
 
   always {
     asel = 2b0;
@@ -44,6 +45,7 @@ module fsm_main (
         rc = 4b0111;
         asel = 2b00;
         bsel = 3b001;
+        we = b1;
         state.d = state.SHIFTBLOCK1;
       
       // Shift the first column by 2 bits
@@ -53,6 +55,7 @@ module fsm_main (
         rc = 4b0;
         asel = 2b00;
         bsel = 3b010;
+        we = b1;
         state.d = state.SHIFTBLOCK2;
       
       // Shift the second column by 2 bits
@@ -71,6 +74,7 @@ module fsm_main (
         rc = 4b0001;
         asel = 2b00;
         bsel = 3b010;
+        we = b1;
         state.d = state.SHIFTBLOCK4;
       
       // Shift the fourth column by 2 bits
@@ -80,12 +84,15 @@ module fsm_main (
         rc = 4b0001;
         asel = 2b00;
         bsel = 3b010;
+        we = b1;
         state.d = state.RANDCOL;
       
       state.RANDCOL:
         alufn = 6b011010; //A
         rc = 4b1001;
         asel = 2b11;
+        we = b1;
+        col = alu; // store rand col as var
         state.d = state.CHECKCOL;
       
       state.CHECKCOL:
@@ -94,55 +101,145 @@ module fsm_main (
         rc = 4b1011;
         asel = 2b00;
         bsel = 3b011;
+        we = b1;
         state.d = state.BRANCHCOL;
       
       state.BRANCHCOL:
-        if (alu[16] == 16b1) {
-        
+        if (alu == 16b1) {
+          state.d = state.RANDCOLOUR;
+        } else {
+          state.d = state.STORECOL;
         }
-        state.d = state.BRANCHCOL;
       
+      // Get randgen output from B
       state.RANDCOLOUR:
+        alufn = 6b011100; //B
+        bsel = 3b110;
+        rc = 4b1010;
+        we = b1;
+        state.d = state.ADDCOLOR;
       
       state.ADDCOLOR:
+        alufn = 6b000000; //ADD
+        asel = 2b00;
+        bsel = 3b000;
+        ra = 4b1010;
+        rc = 4b1011;
+        we = b1;
+        state.d = state.BRANCHCOL;
       
       state.ADDBLOCK:
+        alufn = 6b000000; //ADD
+        asel = 2b00;
+        bsel = 3b000;
+        ra = 4b1010;
+        rc = 4b1011;
+        we = b1;
+        state.d = state.BRANCHCOL;
       
       state.STORECOL:
       
       state.CHECKEMPTYROW:
+        alufn = 6b110011; //COMPEQ
+        ra = 4b1101;
+        rc = 4b0111;
+        asel = 2b10;
+        bsel = 3b101;
+        state.d = state.BRANCHCOL;
       
       state.BRANCHEMPTYROW:
       
       state.CHECKPLAYERPOS:
+        alufn = 6b110011; //COMPEQ
+        ra = 4b1000;
+        rc = 4b1100;
+        asel = 2b00;
+        bsel = 3b101;
+        state.d = state.BRANCHSCORE;
       
       state.BRANCHSCORE:
       
       state.CHECKCOMBO:
+        alufn = 6b110011; //COMPEQ
+        ra = 4b0100;
+        rc = 4b1100;
+        asel = 2b00;
+        bsel = 3b011;
+        state.d = state.ADDCOMBO;
       
       state.ADDCOMBO:
+        alufn = 6b000000; //ADD
+        ra = 4b0100;
+        rc = 4b0100;
+        asel = 2b00;
+        bsel = 3b001;
+        state.d = state.MULCOMBO;
       
       state.MULCOMBO:
+        alufn = 6b100000; //SHL
+        ra = 4b0100;
+        rc = 4b1101;
+        asel = 2b00;
+        bsel = 3b001;
+        state.d = state.ADDSCORE;
       
       state.ADDSCORE:
+        alufn = 6b100000; //ADD
+        ra = 4b0101;
+        rc = 4b0101;
+        asel = 2b00;
+        bsel = 3b000;
+        state.d = state.RESETCOMBO;
       
       state.RESETCOMBO:
+        alufn = 6b100000; //ADD
+        ra = 4b0000;
+        rc = 4b0100;
+        asel = 2b10;
+        bsel = 3b100;
+        state.d = state.MINUSHEALTH;
       
       state.MINUSHEALTH:
+        alufn = 6b000001; //SUB
+        ra = 4b0110;
+        rc = 4b0110;
+        asel = 2b00;
+        bsel = 3b001;
+        state.d = state.CHECKHEALTH;
       
       state.CHECKHEALTH:
+        alufn = 6b110111; //CMPLE
+        ra = 4b0110;
+        rc = 4b1101;
+        asel = 2b00;
+        bsel = 3b100;
+        state.d = state.BRANCHHEALTH;
       
       state.BRANCHHEALTH:
       
       state.COUNTERMOD:
+        alufn = 6b111111; //MOD
+        ra = 4b0111;
+        rc = 4b1110;
+        asel = 2b00;
+        bsel = 3b111;
+        state.d = state.CHECKMOD;
       
       state.CHECKMOD:
+        alufn = 6b110011; //COMPEQ
+        ra = 4b1110;
+        rc = 4b1110;
+        asel = 2b00;
+        bsel = 3b100;
+        state.d = state.INCREASECLK;
       
       state.INCREASECLK:
       
       state.CLKHOLD:
       
       state.END:
+      
+      state.IDLE:
       
 
       
