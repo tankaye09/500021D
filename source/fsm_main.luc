@@ -2,9 +2,10 @@ module fsm_main (
     input clk,  // clock
     input rst,  // reset
     input start, // start button
+    input alu[16], // output of the alufn
+    input rd2[16], // rd2
     output asel[2],
     output bsel[3],
-    output wdsel,
     output alufn[6],
     output stu,
     output we,
@@ -22,7 +23,6 @@ module fsm_main (
   always {
     asel = 2b0;
     bsel = 3b0;
-    wdsel = 0;
     stu = 0;
     we = 0;
     ra = 4b0;
@@ -62,19 +62,45 @@ module fsm_main (
         rc = 4b0001;
         asel = 2b00;
         bsel = 3b010;
-        state.d = state.SHIFTBLOCK2;
+        state.d = state.SHIFTBLOCK3;
         
       // Shift the third column by 2 bits
       state.SHIFTBLOCK3:
+        alufn = 6b100000; //SHL
+        ra = 4b0001;
+        rc = 4b0001;
+        asel = 2b00;
+        bsel = 3b010;
+        state.d = state.SHIFTBLOCK4;
       
       // Shift the fourth column by 2 bits
       state.SHIFTBLOCK4:
+        alufn = 6b100000; //SHL
+        ra = 4b0001;
+        rc = 4b0001;
+        asel = 2b00;
+        bsel = 3b010;
+        state.d = state.RANDCOL;
       
       state.RANDCOL:
+        alufn = 6b011010; //A
+        rc = 4b1001;
+        asel = 2b11;
+        state.d = state.CHECKCOL;
       
       state.CHECKCOL:
+        alufn = 6b110111; //CMPLE
+        ra = 4b1001;
+        rc = 4b1011;
+        asel = 2b00;
+        bsel = 3b011;
+        state.d = state.BRANCHCOL;
       
       state.BRANCHCOL:
+        if (alu[16] == 16b1) {
+        
+        }
+        state.d = state.BRANCHCOL;
       
       state.RANDCOLOUR:
       
