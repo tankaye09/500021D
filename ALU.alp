@@ -15,7 +15,6 @@
     <src>alu_mod.luc</src>
     <src>alu_shiftright_mux.luc</src>
     <src>alu_bool.luc</src>
-    <src>Main_FSM_sk.luc</src>
     <component>reset_conditioner.luc</component>
     <src>full_adder.luc</src>
     <src>alu_adder.luc</src>
