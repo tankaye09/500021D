@@ -12,17 +12,19 @@ module au_top (
   ) {
   
   sig rst;                  // reset signal
-  alu_ alu;
-  
+  alu_ alu;  
   
   .clk(clk) {
     .rst(rst) {
       dff register_a[16];
       dff register_b[16];
+      alu_tester tester;
     }
     // The reset conditioner is used to synchronize the reset signal to the FPGA
     // clock. This ensures the entire FPGA comes out of reset at the same time.
     reset_conditioner reset_cond;
+    button_conditioner buttoncond;
+    edge_detector buttondetector(#RISE(1), #FALL(0));
   }
   
   always {
@@ -37,9 +39,9 @@ module au_top (
     io_seg = 8hff;          // turn segments off
     io_sel = 4hf;           // select no digits
     
-
-    // Store a and b inputs
+    // ALU setup
     
+    // Store a and b inputs by flipping the io_dip[1] and io_dip[0] switches
     if(io_dip[2][0]){                      // if io_dip[2][0] is high, store io_dip[1] and io_dip[0] as a inputs
       register_a.d[15:8] = io_dip[1];
       register_a.d[7:0] = io_dip[0];
@@ -49,36 +51,39 @@ module au_top (
       register_b.d[7:0] = io_dip[0];
     }
     
-    // test for that registers are storing a and b
-    // case(io_dip[2][1]) {
-    //  b0:
-    //    io_led[2] = register_a.q[15:8];
-    //    io_led[1] = register_a.q[7:0];
-    //  b1:
-    //    io_led[2] = register_b.q[15:8];
-    //    io_led[1] = register_b.q[7:0];
-    //  default:
-    //    io_led[2] = register_a.q[15:8];
-    //    io_led[1] = register_a.q[7:0];
-    //}
+    alu.a = 0;  // initialise with 0
+    alu.b = 0;  // initialise with 0
+    alu.alufn = 0;   // initialise with 0
+    io_led[1] = alu.q[15:8];  // 16 MSB of alu output shown in io_led[1]
+    io_led[0] = alu.q[7:0];   // 16 LSB of alu output shown in io_led[0]
+    
+    
+    // ALU auto tester setup
+    
+    buttoncond.in = io_button[0];  // button that triggers next state of tester circuit
+    buttondetector.in = buttoncond.out; // edge detector to ensure a single button press results in an output of 1 in 1 clk cycle only
+    tester.next = 0;  // initialise tester.next button as always 0 until ALU is in auto tester mode
+    tester.actout = 0;  // initialise actual output to be 0 until ALU is in auto tester mode
 
-    // test for adder
-    //adder.alufn0 = io_dip[2][1];          
-    //adder.a = register_a.q;
-    //adder.b = register_b.q;
-    //io_led[1] = adder.q[15:8];             // output sum of adder displayed in io_led[1] and io_led[0]
-    //io_led[0] = adder.q[7:0];
-    //io_led[2][2] =adder.z;
-    //io_led[2][1] =adder.v;
-    //io_led[2][0] =adder.n;
+    // implement mux with IO_DIP[2][1] as selector. If 0, ALU Operation, if 1, ALU Auto Tester
     
-    // alu
-    
-    alu.a = register_a.q;
-    alu.b = register_b.q;
-    alu.alufn = io_dip[2][7:2];             // io_dip[2][7:2] = alufn6 - alufn0
-    io_led[1] = alu.q[15:8];                // output sum of adder displayed in io_led[1] and io_led[0]
-    io_led[0] = alu.q[7:0];
-    
+    case(io_dip[2][1]) {     
+      b0: // normal ALU operations
+        alu.a = register_a.q;                   // alu a input takes in register_a stored value
+        alu.b = register_b.q;                   // alu b input takes in register_b stored value
+        alu.alufn = io_dip[2][7:2];             // io_dip[2][7:2] = alufn6 - alufn0
+        //io_led[1] = alu.q[15:8];                // output sum of adder displayed in io_led[1] and io_led[0]
+        //io_led[0] = alu.q[7:0];
+      
+      b1: // ALU auto tester
+        tester.next = buttondetector.out;       // in tester mode, next button accepts the output of buttondetector
+        tester.actout = alu.q;                  // actual output given by the actual alu operation
+        
+        io_led[2][0] = tester.q;                // output boolean of tester
+        io_led[2][7:1] = tester.state_index;    // current state index of tester
+        alu.a = tester.a;                       // a from tester as input a for alu
+        alu.b = tester.b;                       // b from tester as input b for alu
+        alu.alufn = tester.alufn;               // alufn from tester as input alufn for alu
+    }
   }
 }
