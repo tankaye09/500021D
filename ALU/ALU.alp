@@ -26,9 +26,7 @@
     <src>alu_shiftright.luc</src>
     <src>alu_shiftleft.luc</src>
     <component>edge_detector.luc</component>
-    <constraint lib="true">alchitry.acf</constraint>
     <constraint>custom.acf</constraint>
-    <constraint lib="true">io.acf</constraint>
-    <constraint lib="true">au.xdc</constraint>
+    <constraint>customised.xdc</constraint>
   </files>
 </project>
