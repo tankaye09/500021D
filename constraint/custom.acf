@@ -59,11 +59,11 @@ pin io_dip[1][6] A27 pulldown;
 pin io_dip[1][7] A28 pulldown;
 pin io_dip[2][0] A30 pulldown;
 pin io_dip[2][1] A31 pulldown;
-pin io_dip[2][2] A33 pulldown;
+//pin io_dip[2][2] A33 pulldown;
 pin io_dip[2][3] A34 pulldown;
-pin io_dip[2][4] A36 pulldown;
+//pin io_dip[2][4] A36 pulldown;
 pin io_dip[2][5] A37 pulldown;
-pin io_dip[2][6] A39 pulldown;
+//pin io_dip[2][6] A39 pulldown;
 pin io_dip[2][7] A40 pulldown;
 
 pin io_button[0] B28 pulldown;
@@ -74,7 +74,7 @@ pin io_button[4] C49 pulldown;
 
 pin io_sel[0] A9;
 pin io_sel[1] A8;
-pin io_sel[2] A42;
+//pin io_sel[2] A42;
 pin io_sel[3] A43;
 
 pin io_seg[0] A5;
@@ -85,3 +85,18 @@ pin io_seg[4] A45;
 pin io_seg[5] A3;
 pin io_seg[6] A2;
 pin io_seg[7] A49;
+
+//my IOs
+pin customout[0] C49;  //[0][7]
+pin customout[1] C48;  //[1][7]
+pin customout[2] C2;  //[1][7]
+
+
+pin customin[0] A33 pulldown;  //[0][2]
+pin customin[1] A36 pulldown;  //[0][3]
+pin customin[2] A39 pulldown;  //[0][4]
+pin customin[3] A42 pulldown;
+pin customin[4] A45 pulldown;
+
+
+

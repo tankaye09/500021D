@@ -2,9 +2,12 @@ module main_fsm (
     input clk,  // clock
     input rst,  // reset
     input start, // start button
-    input alu,
-    input rd2,
-    input clkhold, // FOR TESTING ONLY
+    input rd2[16],  // rd2
+    input cycleCounter[16], // number of cycles of the game, each cycle resembles one frame change in the game
+    input hold,     // clk hold of the slow clock
+    
+    input clkHold,    
+    
     output asel[2],
     output bsel[3],
     output alufn[6],
@@ -17,17 +20,28 @@ module main_fsm (
   ) {
   .clk(clk) {
     .rst(rst) {
-      fsm state = {INCREASECOUNT, SHIFTBLOCK1, SHIFTBLOCK2, SHIFTBLOCK3, SHIFTBLOCK4, RANDCOL, CHECKCOL, BRANCHCOL, RANDCOLOUR, ADDCOLOR, ADDBLOCK, STORECOL, CHECKEMPTYROW, BRANCHEMPTYROW, CHECKPLAYERPOS, BRANCHSCORE, CHECKCOMBO, ADDCOMBO, MULCOMBO, ADDSCORE, RESETCOMBO, MINUSHEALTH, CHECKHEALTH, BRANCHHEALTH, COUNTERMOD, CHECKMOD, INCREASECLK, CLKHOLD, END, IDLE}; // default will be IDLE
+      fsm state = {INITLIFE, INCREASECOUNT, SHIFTBLOCK1, SHIFTBLOCK2, SHIFTBLOCK3, SHIFTBLOCK4, RANDCOL, CHECKCOL, BRANCHCOL, RANDCOLOUR, ADDCOLOR1, ADDCOLOR2, ADDBLOCK, STORECOL1, STORECOL2, STORECOL3, STORECOL4, CHECKEMPTYROW, BRANCHEMPTYROW, CHECKPLAYERPOS, BRANCHSCORE, CHECKCOMBO, ADDCOMBO, MULCOMBO, ADDSCORE, RESETCOMBO, MINUSHEALTH, CHECKHEALTH, BRANCHHEALTH, COUNTERMOD, CHECKMOD, BRANCHMOD, INCREASECLK, CLKHOLD, END, IDLE}; // default will be IDLE
       //counter slowClock(#SIZE(1),#DIV(26));
-      counter slowClock(#SIZE(1),#DIV(2));
+      counter slowClock(#SIZE(1),#DIV(26));
+      counter slowClock1(#SIZE(1),#DIV(25));
+      counter slowClock2(#SIZE(1),#DIV(24));
+      counter slowClock3(#SIZE(1),#DIV(23));
+      counter slowClock4(#SIZE(1),#DIV(22));
     }
     edge_detector slowClockEdge(#RISE(1), #FALL(0));
-  }
-  
+    edge_detector slowClockEdge1(#RISE(1), #FALL(0));
+    edge_detector slowClockEdge2(#RISE(1), #FALL(0));
+    edge_detector slowClockEdge3(#RISE(1), #FALL(0));
+    edge_detector slowClockEdge4(#RISE(1), #FALL(0));
+  }  
   
   always {
   
     slowClockEdge.in = slowClock.value;
+    slowClockEdge1.in = slowClock1.value;
+    slowClockEdge2.in = slowClock2.value;
+    slowClockEdge3.in = slowClock3.value;
+    slowClockEdge4.in = slowClock4.value;
     
     asel = 2b0;
     bsel = 3b0;
@@ -42,7 +56,20 @@ module main_fsm (
     
       state.IDLE:
         if (start) {
-          state.d = state.INCREASECOUNT; 
+          state.d = state.INITLIFE; 
+        }
+        
+      // Initialise with 3 lives, as register default value is 0
+      state.INITLIFE:
+        alufn = 6b000000; //ADD
+        ra = 4b110;
+        rc = 4b0110;
+        asel = 2b00;
+        bsel = 3b011;
+        if (slowClockEdge.out == b1){
+          if (clkHold == 0) {
+          state.d = state.INCREASECOUNT;
+          }
         }
       
       // State to start the game and add 1 to the counter
@@ -53,7 +80,7 @@ module main_fsm (
         asel = 2b00;
         bsel = 3b001;
         if (slowClockEdge.out == b1){ //only add when MSB of slowCLock == 1
-          if (clkhold == 0) {
+          if (clkHold == 0) {
           state.d = state.SHIFTBLOCK1;
           }
         }
@@ -67,7 +94,7 @@ module main_fsm (
         bsel = 3b010;
         //state.d = state.SHIFTBLOCK2;
         if (slowClockEdge.out == b1){ //only add when MSB of slowCLock == 1
-          if (clkhold == 0) {
+          if (clkHold == 0) {
           state.d = state.SHIFTBLOCK2;
           }
         }
@@ -80,7 +107,7 @@ module main_fsm (
         asel = 2b00;
         bsel = 3b010;
         if (slowClockEdge.out == b1){ //only add when MSB of slowCLock == 1
-          if (clkhold == 0) {
+          if (clkHold == 0) {
           state.d = state.SHIFTBLOCK3;
           }
         }    
@@ -93,7 +120,7 @@ module main_fsm (
         bsel = 3b010;
         we = b1;
         if (slowClockEdge.out == b1){ //only add when MSB of slowCLock == 1
-                if (clkhold == 0) {
+                if (clkHold == 0) {
               state.d = state.SHIFTBLOCK4;
           }
         }
@@ -112,11 +139,10 @@ module main_fsm (
           }
 
       state.RANDCOL:
-        alufn = 6b011010; //A
+        alufn = 6b011100; //B
         rc = 4b1001;
         asel = 2b11;
         we = b1;
-        col = alu; // store rand col as var
         if (slowClockEdge.out) {
           if (clkHold == 0) {
             state.d = state.CHECKCOL;
@@ -137,7 +163,10 @@ module main_fsm (
           }
 
       state.BRANCHCOL:
-        if (alu == 16b1) {
+        rb = 4b1011;
+        we = 0;
+        
+        if (rd2 == 16b1) {
           if (slowClockEdge.out) {
             if (clkHold == 0) {
                 state.d = state.RANDCOLOUR;
@@ -146,7 +175,7 @@ module main_fsm (
         } else {
           if (slowClockEdge.out) {
             if (clkHold == 0) {
-                state.d = state.STORECOL;
+                state.d = state.STORECOL1;
                 }
               }
         }
@@ -159,30 +188,55 @@ module main_fsm (
         we = b1;
         if (slowClockEdge.out) {
           if (clkHold == 0) {
-            state.d = state.ADDCOLOR;
+            state.d = state.ADDCOLOR1;
             }
           }
 
-      state.ADDCOLOR:
-        alufn = 6b000000; //ADD
-        asel = 2b00;
+      state.ADDCOLOR1:
+        alufn = 6b011100; //'B'
         bsel = 3b000;
-        ra = 4b1010;
-        rc = 4b1011;
+        rb = h09;
+        rc = h0B;
         we = b1;
+        
         if (slowClockEdge.out) {
           if (clkHold == 0) {
-            state.d = state.BRANCHCOL;
+            state.d = state.ADDCOLOR2;
+            }
+          }
+        
+        state.ADDCOLOR2:
+        alufn = 6b000000; //ADD
+        asel = 0;
+        bsel = 3b000;
+        ra = h0A;
+        rb = h0B;
+        rc = h0C;
+        we = b1;
+        
+        if (slowClockEdge.out) {
+          if (clkHold == 0) {
+            state.d = state.ADDBLOCK;
             }
           }
 
       // Fix
       state.ADDBLOCK:
-        alufn = 6b000000; //ADD
-        asel = 2b00;
+        alufn = 6b011100; //'B'
         bsel = 3b000;
-        ra = 4b1010;
-        rc = 4b1011;
+        rb = h0C;
+        if (rd2 == b0) {
+          rc = b0;
+        }
+        else if (rd2 == b1) {
+          rc = b01;
+        }
+        else if (rd2 == b10) {
+          rc = b10;
+        }
+        else if (rd2 == b11) {
+          rc = b11;
+        }
         we = b1;
         if (slowClockEdge.out) {
           if (clkHold == 0) {
@@ -214,6 +268,7 @@ module main_fsm (
           if (clkHold == 0) {
           state.d = state.STORECOL3;
           }
+        }
 
       state.STORECOL3:
         alufn = 6b111010; // SHAD8
@@ -226,6 +281,7 @@ module main_fsm (
           if (clkHold == 0) {
           state.d = state.STORECOL4;
           }
+        }
 
       state.STORECOL4:
         alufn = 6b111011; // SHAD6
@@ -238,6 +294,7 @@ module main_fsm (
           if (clkHold == 0) {
           state.d = state.CHECKEMPTYROW;
           }
+        }
 
       state.CHECKEMPTYROW:
         alufn = 6b110011; //COMPEQ
@@ -248,12 +305,14 @@ module main_fsm (
         we = b1;
         if (slowClockEdge.out) {
           if (clkHold == 0) {
-            state.d = state.BRANCHCOL;
+            state.d = state.BRANCHEMPTYROW;
             }
           }
 
       state.BRANCHEMPTYROW:
-        if (alu == 16b1) {
+        rb = 4b0111;
+        we = 0;
+        if (rd2 == 16b1) {
           if (slowClockEdge.out) {
             if (clkHold == 0) {
                 state.d = state.COUNTERMOD;
@@ -281,7 +340,9 @@ module main_fsm (
           }
 
       state.BRANCHSCORE:
-        if (alu == 16b1) {
+        rb = 4b1100;
+        we = 0;
+        if (rd2 == 16b1) {
           if (slowClockEdge.out) {
             if (clkHold == 0) {
                 state.d = state.CHECKCOMBO;
@@ -388,7 +449,9 @@ module main_fsm (
           }
 
       state.BRANCHHEALTH:
-        if (alu == 16b1) {
+        rb = 4b1101;
+        we = 0;
+        if (rd2 == 16b1) {
           if (slowClockEdge.out) {
             if (clkHold == 0) {
                 state.d = state.END;
@@ -430,7 +493,9 @@ module main_fsm (
           }
 
       state.BRANCHMOD:
-        if (alu == 16b0) {
+        rb = 4b1110;
+        we = 0;
+        if (rd2 == 16b0) {
           if (slowClockEdge.out) {
             if (clkHold == 0) {
                 state.d = state.INCREASECLK;
@@ -456,11 +521,42 @@ module main_fsm (
       // Wait in this state until hold signal is 1
       state.CLKHOLD:
         if (hold) {
-          if (slowClockEdge.out) {
-            if (clkHold == 0) {
-                state.d = state.INCREASECOUNT;
+          if (cycleCounter <= 10) {
+            if (slowClockEdge.out) {
+              if (clkHold == 0) {
+                  state.d = state.INCREASECOUNT;
+                  }
                 }
-              }
+          }
+          else if (cycleCounter <= 30) {
+            if (slowClockEdge1.out) {
+              if (clkHold == 0) {
+                  state.d = state.INCREASECOUNT;
+                  }
+                }
+          }
+          else if (cycleCounter <= 70) {
+            if (slowClockEdge2.out) {
+              if (clkHold == 0) {
+                  state.d = state.INCREASECOUNT;
+                  }
+                }
+          }
+          else if (cycleCounter <= 150 ) {
+            if (slowClockEdge3.out) {
+              if (clkHold == 0) {
+                  state.d = state.INCREASECOUNT;
+                  }
+                }
+          }
+          else if (cycleCounter > 150) {
+            if (slowClockEdge4.out) {
+              if (clkHold == 0) {
+                  state.d = state.INCREASECOUNT;
+                  }
+                }
+          }
+
         }
 
       // Finish game
@@ -471,7 +567,5 @@ module main_fsm (
             state.d = state.IDLE;
             }
           }
-
-      state.IDLE:
   }
 }

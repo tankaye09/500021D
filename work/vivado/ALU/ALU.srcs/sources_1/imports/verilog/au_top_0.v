@@ -14,7 +14,9 @@ module au_top_0 (
     output reg [7:0] io_seg,
     output reg [3:0] io_sel,
     input [4:0] io_button,
-    input [23:0] io_dip
+    input [23:0] io_dip,
+    output reg [2:0] customout,
+    input [4:0] customin
   );
   
   
@@ -32,20 +34,155 @@ module au_top_0 (
     .q(M_alu_q)
   );
   
-  reg [15:0] M_register_a_d, M_register_a_q = 1'h0;
-  reg [15:0] M_register_b_d, M_register_b_q = 1'h0;
+  wire [8-1:0] M_basket_fsm_q;
+  reg [1-1:0] M_basket_fsm_l;
+  reg [1-1:0] M_basket_fsm_r;
+  reg [1-1:0] M_basket_fsm_c;
+  basket_fsm_2 basket_fsm (
+    .clk(clk),
+    .rst(rst),
+    .l(M_basket_fsm_l),
+    .r(M_basket_fsm_r),
+    .c(M_basket_fsm_c),
+    .q(M_basket_fsm_q)
+  );
+  wire [16-1:0] M_regfile_read_data_1;
+  wire [16-1:0] M_regfile_read_data_2;
+  wire [16-1:0] M_regfile_life_data;
+  wire [16-1:0] M_regfile_score_data;
+  wire [16-1:0] M_regfile_cycle_counter_data;
+  wire [16-1:0] M_regfile_col_1;
+  wire [16-1:0] M_regfile_col_2;
+  wire [16-1:0] M_regfile_col_3;
+  wire [16-1:0] M_regfile_col_4;
+  reg [16-1:0] M_regfile_read_address_1;
+  reg [16-1:0] M_regfile_read_address_2;
+  reg [16-1:0] M_regfile_write_address;
+  reg [16-1:0] M_regfile_write_data;
+  reg [1-1:0] M_regfile_write_enable;
+  regfile_3 regfile (
+    .clk(clk),
+    .rst(rst),
+    .read_address_1(M_regfile_read_address_1),
+    .read_address_2(M_regfile_read_address_2),
+    .write_address(M_regfile_write_address),
+    .write_data(M_regfile_write_data),
+    .write_enable(M_regfile_write_enable),
+    .read_data_1(M_regfile_read_data_1),
+    .read_data_2(M_regfile_read_data_2),
+    .life_data(M_regfile_life_data),
+    .score_data(M_regfile_score_data),
+    .cycle_counter_data(M_regfile_cycle_counter_data),
+    .col_1(M_regfile_col_1),
+    .col_2(M_regfile_col_2),
+    .col_3(M_regfile_col_3),
+    .col_4(M_regfile_col_4)
+  );
+  wire [2-1:0] M_main_fsm_asel;
+  wire [3-1:0] M_main_fsm_bsel;
+  wire [6-1:0] M_main_fsm_alufn;
+  wire [1-1:0] M_main_fsm_stu;
+  wire [1-1:0] M_main_fsm_we;
+  wire [4-1:0] M_main_fsm_ra;
+  wire [4-1:0] M_main_fsm_rb;
+  wire [4-1:0] M_main_fsm_rc;
+  reg [1-1:0] M_main_fsm_start;
+  reg [16-1:0] M_main_fsm_rd2;
+  reg [16-1:0] M_main_fsm_cycleCounter;
+  reg [1-1:0] M_main_fsm_hold;
+  reg [1-1:0] M_main_fsm_clkHold;
+  main_fsm_4 main_fsm (
+    .clk(clk),
+    .rst(rst),
+    .start(M_main_fsm_start),
+    .rd2(M_main_fsm_rd2),
+    .cycleCounter(M_main_fsm_cycleCounter),
+    .hold(M_main_fsm_hold),
+    .clkHold(M_main_fsm_clkHold),
+    .asel(M_main_fsm_asel),
+    .bsel(M_main_fsm_bsel),
+    .alufn(M_main_fsm_alufn),
+    .stu(M_main_fsm_stu),
+    .we(M_main_fsm_we),
+    .ra(M_main_fsm_ra),
+    .rb(M_main_fsm_rb),
+    .rc(M_main_fsm_rc)
+  );
+  wire [32-1:0] M_random_num;
+  reg [1-1:0] M_random_next;
+  reg [32-1:0] M_random_seed;
+  pn_gen_5 random (
+    .clk(clk),
+    .rst(rst),
+    .next(M_random_next),
+    .seed(M_random_seed),
+    .num(M_random_num)
+  );
   wire [1-1:0] M_reset_cond_out;
   reg [1-1:0] M_reset_cond_in;
-  reset_conditioner_2 reset_cond (
+  reset_conditioner_6 reset_cond (
     .clk(clk),
     .in(M_reset_cond_in),
     .out(M_reset_cond_out)
   );
+  wire [1-1:0] M_left_buttoncond_out;
+  reg [1-1:0] M_left_buttoncond_in;
+  button_conditioner_7 left_buttoncond (
+    .clk(clk),
+    .in(M_left_buttoncond_in),
+    .out(M_left_buttoncond_out)
+  );
+  wire [1-1:0] M_left_buttondetector_out;
+  reg [1-1:0] M_left_buttondetector_in;
+  edge_detector_8 left_buttondetector (
+    .clk(clk),
+    .in(M_left_buttondetector_in),
+    .out(M_left_buttondetector_out)
+  );
+  wire [1-1:0] M_right_buttoncond_out;
+  reg [1-1:0] M_right_buttoncond_in;
+  button_conditioner_7 right_buttoncond (
+    .clk(clk),
+    .in(M_right_buttoncond_in),
+    .out(M_right_buttoncond_out)
+  );
+  wire [1-1:0] M_right_buttondetector_out;
+  reg [1-1:0] M_right_buttondetector_in;
+  edge_detector_8 right_buttondetector (
+    .clk(clk),
+    .in(M_right_buttondetector_in),
+    .out(M_right_buttondetector_out)
+  );
+  wire [1-1:0] M_colour_buttoncond_out;
+  reg [1-1:0] M_colour_buttoncond_in;
+  button_conditioner_7 colour_buttoncond (
+    .clk(clk),
+    .in(M_colour_buttoncond_in),
+    .out(M_colour_buttoncond_out)
+  );
+  wire [1-1:0] M_colour_buttondetector_out;
+  reg [1-1:0] M_colour_buttondetector_in;
+  edge_detector_8 colour_buttondetector (
+    .clk(clk),
+    .in(M_colour_buttondetector_in),
+    .out(M_colour_buttondetector_out)
+  );
+  wire [1-1:0] M_start_buttoncond_out;
+  reg [1-1:0] M_start_buttoncond_in;
+  button_conditioner_7 start_buttoncond (
+    .clk(clk),
+    .in(M_start_buttoncond_in),
+    .out(M_start_buttoncond_out)
+  );
+  wire [1-1:0] M_start_buttondetector_out;
+  reg [1-1:0] M_start_buttondetector_in;
+  edge_detector_8 start_buttondetector (
+    .clk(clk),
+    .in(M_start_buttondetector_in),
+    .out(M_start_buttondetector_out)
+  );
   
   always @* begin
-    M_register_b_d = M_register_b_q;
-    M_register_a_d = M_register_a_q;
-    
     M_reset_cond_in = ~rst_n;
     rst = M_reset_cond_out;
     usb_tx = usb_rx;
@@ -53,28 +190,78 @@ module au_top_0 (
     io_led = 24'h000000;
     io_seg = 8'hff;
     io_sel = 4'hf;
-    if (io_dip[16+0+0-:1]) begin
-      M_register_a_d[8+7-:8] = io_dip[8+7-:8];
-      M_register_a_d[0+7-:8] = io_dip[0+7-:8];
-    end else begin
-      M_register_b_d[8+7-:8] = io_dip[8+7-:8];
-      M_register_b_d[0+7-:8] = io_dip[0+7-:8];
-    end
-    M_alu_a = M_register_a_q;
-    M_alu_b = M_register_b_q;
-    M_alu_alufn = io_dip[16+2+5-:6];
-    io_led[8+7-:8] = M_alu_q[8+7-:8];
-    io_led[0+7-:8] = M_alu_q[0+7-:8];
+    customout = 3'h7;
+    M_left_buttoncond_in = customin[0+0-:1];
+    M_left_buttondetector_in = M_left_buttoncond_out;
+    M_right_buttoncond_in = customin[1+0-:1];
+    M_right_buttondetector_in = M_right_buttoncond_out;
+    M_colour_buttoncond_in = customin[2+0-:1];
+    M_colour_buttondetector_in = M_colour_buttoncond_out;
+    M_basket_fsm_l = M_left_buttondetector_out;
+    M_basket_fsm_r = M_right_buttondetector_out;
+    M_basket_fsm_c = M_colour_buttondetector_out;
+    io_led[0+7-:8] = M_basket_fsm_q;
+    M_start_buttoncond_in = customin[3+0-:1];
+    M_start_buttondetector_in = M_start_buttoncond_out;
+    M_main_fsm_start = M_start_buttondetector_out;
+    M_main_fsm_rd2 = 1'h0;
+    M_main_fsm_hold = 1'h0;
+    M_main_fsm_clkHold = 1'h0;
+    M_main_fsm_cycleCounter = M_regfile_cycle_counter_data;
+    M_regfile_read_address_1 = M_main_fsm_ra;
+    M_regfile_read_address_2 = M_main_fsm_rb;
+    M_regfile_write_address = M_main_fsm_rc;
+    M_regfile_write_enable = M_main_fsm_we;
+    M_regfile_write_data = M_alu_q;
+    M_alu_a = M_regfile_read_data_1;
+    M_alu_b = M_regfile_read_data_2;
+    M_alu_alufn = M_main_fsm_alufn;
+    
+    case (M_main_fsm_asel)
+      2'h0: begin
+        M_alu_a = M_regfile_read_data_1;
+      end
+      2'h1: begin
+        M_alu_a = 16'h0001;
+      end
+      2'h2: begin
+        M_alu_a = 16'h0000;
+      end
+      default: begin
+        M_alu_a = M_regfile_read_data_1;
+      end
+    endcase
+    M_random_seed = M_main_fsm_asel + M_main_fsm_bsel;
+    M_random_next = M_main_fsm_we;
+    
+    case (M_main_fsm_bsel)
+      3'h0: begin
+        M_alu_b = M_regfile_read_data_2;
+      end
+      3'h1: begin
+        M_alu_b = 16'h0001;
+      end
+      3'h2: begin
+        M_alu_b = 16'h0002;
+      end
+      3'h3: begin
+        M_alu_b = 16'h0003;
+      end
+      3'h4: begin
+        M_alu_b = 16'h0000;
+      end
+      3'h5: begin
+        M_alu_b = M_basket_fsm_q;
+      end
+      3'h6: begin
+        M_alu_b = M_random_num[0+1-:2];
+      end
+      3'h7: begin
+        M_alu_b = 16'h000a;
+      end
+      default: begin
+        M_alu_b = M_regfile_read_data_2;
+      end
+    endcase
   end
-  
-  always @(posedge clk) begin
-    if (rst == 1'b1) begin
-      M_register_a_q <= 1'h0;
-      M_register_b_q <= 1'h0;
-    end else begin
-      M_register_a_q <= M_register_a_d;
-      M_register_b_q <= M_register_b_d;
-    end
-  end
-  
 endmodule

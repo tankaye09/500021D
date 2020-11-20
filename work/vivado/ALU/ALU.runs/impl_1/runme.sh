@@ -24,7 +24,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/ALU/work/vivado/ALU/ALU.runs/impl_1'
+HD_PWD='C:/Users/Kaye/Desktop/ComStruc 50.002/alchitry/500021D/work/vivado/ALU/ALU.runs/impl_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log
