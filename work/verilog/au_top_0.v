@@ -23,6 +23,8 @@ module au_top_0 (
   
   reg rst;
   
+  reg [2:0] randNum;
+  
   wire [16-1:0] M_alu_q;
   reg [6-1:0] M_alu_alufn;
   reg [16-1:0] M_alu_a;
@@ -108,15 +110,13 @@ module au_top_0 (
     .rb(M_main_fsm_rb),
     .rc(M_main_fsm_rc)
   );
-  wire [32-1:0] M_random_num;
-  reg [1-1:0] M_random_next;
-  reg [32-1:0] M_random_seed;
-  pn_gen_5 random (
+  wire [1-1:0] M_random_out;
+  wire [16-1:0] M_random_debug;
+  rand_gen_5 random (
     .clk(clk),
     .rst(rst),
-    .next(M_random_next),
-    .seed(M_random_seed),
-    .num(M_random_num)
+    .out(M_random_out),
+    .debug(M_random_debug)
   );
   wire [1-1:0] M_reset_cond_out;
   reg [1-1:0] M_reset_cond_in;
@@ -191,6 +191,7 @@ module au_top_0 (
     io_seg = 8'hff;
     io_sel = 4'hf;
     customout = 3'h7;
+    randNum = M_random_debug[0+2-:3];
     M_left_buttoncond_in = customin[0+0-:1];
     M_left_buttondetector_in = M_left_buttoncond_out;
     M_right_buttoncond_in = customin[1+0-:1];
@@ -231,8 +232,6 @@ module au_top_0 (
         M_alu_a = M_regfile_read_data_1;
       end
     endcase
-    M_random_seed = M_main_fsm_asel + M_main_fsm_bsel;
-    M_random_next = M_main_fsm_we;
     
     case (M_main_fsm_bsel)
       3'h0: begin
@@ -254,7 +253,7 @@ module au_top_0 (
         M_alu_b = M_basket_fsm_q;
       end
       3'h6: begin
-        M_alu_b = M_random_num[0+1-:2];
+        M_alu_b = randNum;
       end
       3'h7: begin
         M_alu_b = 16'h000a;

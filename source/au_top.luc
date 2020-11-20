@@ -17,6 +17,7 @@ module au_top (
   ) {
   
   sig rst;                  // reset signal
+  sig randNum[3];         // random number signal 
   
   alu_ alu;
   
@@ -25,7 +26,7 @@ module au_top (
       basket_fsm basket_fsm;
       regfile regfile;
       main_fsm main_fsm;      
-      pn_gen random;            // random number generator
+      rand_gen random;            // random number generator
       
     }
     // The reset conditioner is used to synchronize the reset signal to the FPGA
@@ -64,7 +65,7 @@ module au_top (
     
     customout = b111;
     
-        
+    randNum = random.debug[2:0];  // initialise the random number signal to the debug output of the rand_gen module    
     
     // basket_fsm
     
@@ -122,11 +123,6 @@ module au_top (
     
     }
     
-    // random generator
-    
-    random.seed = main_fsm.asel + main_fsm.bsel;  // random generator seed changes based on asel and bsel
-    random.next = main_fsm.we;                     // next number triggered if we = 1
-    
     // bsel
     
     case(main_fsm.bsel) {
@@ -144,7 +140,7 @@ module au_top (
         alu.b = basket_fsm.q;         // BSEL = 101 => B input to ALU = basket_position
       b110:
         //random number
-        alu.b = random.num[1:0];               // BSEL = 100 => B input to ALU = random
+        alu.b = randNum;               // BSEL = 100 => B input to ALU = random
       b111:
         alu.b = 16h0A;                 // BSEL = 111 => B input to ALU = 10 (Might change to slow score increment
       default:
@@ -155,4 +151,3 @@ module au_top (
     
     
 }
-    
