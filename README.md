@@ -4,10 +4,10 @@
 ## 50.002 Team 12-3 [50.002]
 
 ## Members:
-Kaye Tan /n
-Tiong Shan Kai
-Cao Bing Quan
-Tjoa Jing Sen
+Kaye Tan  
+Tiong Shan Kai  
+Cao Bing Quan  
+Tjoa Jing Sen  
 Sherene Tan
 
 ## Description:
